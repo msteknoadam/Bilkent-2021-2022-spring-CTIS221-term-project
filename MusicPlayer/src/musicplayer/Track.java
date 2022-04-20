@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
  *
  * @author TEKNO
  */
-abstract public class Track {
+abstract public class Track implements TrackInterface {
 
     protected String name;
     protected double length;
@@ -28,6 +28,12 @@ abstract public class Track {
         this.thumbnailImage = thumbnailImage;
         this.file = file;
         this.liked = false;
+    }
+
+    @Override
+    public boolean toggleLike() {
+        this.liked = !this.liked;
+        return this.liked;
     }
 
 }
