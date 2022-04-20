@@ -30,4 +30,14 @@ public class PodcastEpisode extends Track {
         this.podcaster = podcaster;
     }
 
+    @Override
+    public String toString() {
+        String out = "Podcast Episode\n" + super.toString() + "\n";
+        out += "Episode: " + this.episode + "\n";
+        out += "Description: " + this.description + "\n";
+        out += "Podcaster: " + this.podcaster + "\n";
+
+        return out;
+    }
+
 }

@@ -27,6 +27,22 @@ public class Playlist {
         TrackSys.playlists.add(this);
     }
 
+    @Override
+    public String toString() {
+        String out = "Playlist\n";
+        out += "Name: " + this.name + "\n";
+        out += "Description: " + this.description + "\n";
+        out += "Track Count: " + this.trackCount + "\n";
+        out += "Total Length: " + this.totalLength + "\n";
+        out += "Tracks:\n";
+
+        for (Track t : this.tracks) {
+            out += "\t" + t.toString() + "\n";
+        }
+
+        return out;
+    }
+
     public boolean addTrack(Track track) {
         for (Track t : tracks) {
             if (t.name.equalsIgnoreCase(track.name)) {

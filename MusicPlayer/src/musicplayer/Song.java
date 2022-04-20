@@ -30,4 +30,14 @@ public class Song extends Track {
         this.genre = genre;
     }
 
+    @Override
+    public String toString() {
+        String out = "Song\n" + super.toString() + "\n";
+        out += "Artist: " + this.artist + "\n";
+        out += "Album Name: " + this.albumName + "\n";
+        out += "Genre: " + this.genre + "\n";
+
+        return out;
+    }
+
 }

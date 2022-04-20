@@ -31,6 +31,16 @@ abstract public class Track implements TrackInterface {
     }
 
     @Override
+    public String toString() {
+        String out = "";
+        out += "Name: " + this.name + "\n";
+        out += "Length: " + this.length + "\n";
+        out += "Liked: " + this.liked + "\n";
+
+        return out;
+    }
+
+    @Override
     public boolean toggleLike() {
         this.liked = !this.liked;
         return this.liked;
