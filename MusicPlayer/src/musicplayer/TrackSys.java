@@ -6,6 +6,7 @@
 package musicplayer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class TrackSys {
 
     public static ArrayList<Track> tracks = new ArrayList();
-//    public Set<Playlist> playlists = new Set(); // uncomment when Playlist implemented
+    public static HashSet<Playlist> playlists = new HashSet();
 
     public static boolean addTrack(Track track) {
         for (Track t : tracks) {
@@ -66,6 +67,22 @@ public class TrackSys {
         }
 
         return total;
+    }
+
+    public static void calculatePlaylistTotals() {
+        for (Playlist p : playlists) {
+            int trackCount = 0;
+            double totalLength = 0;
+            ArrayList<Track> ptracks = p.getTracks();
+
+            for (Track t : ptracks) {
+                trackCount++;
+                totalLength += t.length;
+            }
+
+            p.setTrackCount(trackCount);
+            p.setTotalLength(totalLength);
+        }
     }
 
 }
