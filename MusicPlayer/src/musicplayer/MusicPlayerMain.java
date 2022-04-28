@@ -9,7 +9,7 @@ package musicplayer;
  *
  * @author TEKNO
  */
-public class MusicPlayer {
+public class MusicPlayerMain {
 
     /**
      * @param args the command line arguments

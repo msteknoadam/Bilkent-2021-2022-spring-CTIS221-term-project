@@ -18,6 +18,7 @@ public class Playlist {
     private int trackCount;
     private double totalLength;
     private ArrayList<Track> tracks = new ArrayList();
+    private static int playlistCount = 0;
 
     public Playlist(String name, String description) {
         this.name = name;
@@ -25,6 +26,7 @@ public class Playlist {
         this.trackCount = 0;
         this.totalLength = 0;
         TrackSys.playlists.add(this);
+        playlistCount++;
     }
 
     @Override
@@ -75,6 +77,10 @@ public class Playlist {
 
     public void setTotalLength(double totalLength) {
         this.totalLength = totalLength;
+    }
+
+    public static int getPlaylistCount() {
+        return playlistCount;
     }
 
 }
