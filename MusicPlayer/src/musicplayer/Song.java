@@ -32,7 +32,7 @@ public class Song extends Track {
 
     @Override
     public String toString() {
-        String out = "Song\n" + super.toString() + "\n";
+        String out = "Song\n" + super.toString();
         out += "Artist: " + this.artist + "\n";
         out += "Album Name: " + this.albumName + "\n";
         out += "Genre: " + this.genre + "\n";
