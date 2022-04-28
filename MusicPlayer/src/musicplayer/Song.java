@@ -20,7 +20,7 @@ public class Song extends Track {
 
     @Override
     public void showCredits() {
-        // GUI ?
+        // Will open a new frame (GUI implementation)
     }
 
     public Song(String name, double length, ImageIcon thumbnailImage, File file, String artist, String albumName, String genre) {

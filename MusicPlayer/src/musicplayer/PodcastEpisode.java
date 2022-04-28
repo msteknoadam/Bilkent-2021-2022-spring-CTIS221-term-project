@@ -20,7 +20,7 @@ public class PodcastEpisode extends Track {
 
     @Override
     public void showCredits() {
-        // GUI ?
+        // Will open a new frame (GUI implementation)
     }
 
     public PodcastEpisode(String name, double length, ImageIcon thumbnailImage, File file, String episode, String description, String podcaster) {
