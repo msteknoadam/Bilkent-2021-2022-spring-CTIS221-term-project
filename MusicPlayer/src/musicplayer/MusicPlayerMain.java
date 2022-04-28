@@ -15,7 +15,7 @@ public class MusicPlayerMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        // Will open the MainFrame once it's implemented (GUI)
     }
-    
+
 }
