@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package musicplayer;
+package GUI;
 
+import HasA.Playlist;
+import Inheritance.Track;
+import SysAndMain.TrackSys;
 import java.util.List;
 import javax.swing.DefaultListModel;
 
