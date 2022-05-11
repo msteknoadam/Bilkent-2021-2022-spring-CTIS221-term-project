@@ -10,6 +10,7 @@ import Inheritance.PodcastEpisode;
 import Inheritance.Song;
 import Inheritance.Track;
 import SysAndMain.TrackSys;
+import java.util.ArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.swing.DefaultComboBoxModel;
@@ -38,7 +39,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.SongDetailsPanel.setVisible(false);
         this.PodcastDetailsPanel.setVisible(false);
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
-        executor.scheduleAtFixedRate(() -> this.updateProgressBar(), 0, 1, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(() -> this.updateProgressBar(), 0, 1, TimeUnit.SECONDS); // update progress bar every second
     }
 
     public void updateProgressBar() {
@@ -140,10 +141,10 @@ public class MainFrame extends javax.swing.JFrame {
         EpisodeTextField = new javax.swing.JTextField();
         DescriptionTextField = new javax.swing.JTextField();
         PodcasterTextField = new javax.swing.JTextField();
-        addTrackButton = new javax.swing.JButton();
-        trackListScrollPane = new javax.swing.JScrollPane();
+        AddTrackButton = new javax.swing.JButton();
+        TrackListScrollPane = new javax.swing.JScrollPane();
         TracksList = new javax.swing.JList<>();
-        playlistListScrollPane = new javax.swing.JScrollPane();
+        PlaylistListScrollPane = new javax.swing.JScrollPane();
         PlaylistsList = new javax.swing.JList<>();
         createPlaylistButton = new javax.swing.JButton();
         TotalTracksLengthLabel = new javax.swing.JLabel();
@@ -153,6 +154,9 @@ public class MainFrame extends javax.swing.JFrame {
         UniquePlaylistCountLabel = new javax.swing.JLabel();
         UniquePlaylistCountTextField = new javax.swing.JTextField();
         RemoveTrackButton = new javax.swing.JButton();
+        ClearPlaylistSelectionButton = new javax.swing.JButton();
+        PlaylistTracksScrollPane = new javax.swing.JScrollPane();
+        PlaylistTracksList = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -345,10 +349,10 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel1.add(TrackPlayingPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 160));
 
-        addTrackButton.setText("Add Track");
-        addTrackButton.addActionListener(new java.awt.event.ActionListener() {
+        AddTrackButton.setText("Add Track");
+        AddTrackButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addTrackButtonActionPerformed(evt);
+                AddTrackButtonActionPerformed(evt);
             }
         });
 
@@ -359,7 +363,7 @@ public class MainFrame extends javax.swing.JFrame {
                 TracksListValueChanged(evt);
             }
         });
-        trackListScrollPane.setViewportView(TracksList);
+        TrackListScrollPane.setViewportView(TracksList);
 
         PlaylistsList.setBorder(javax.swing.BorderFactory.createTitledBorder("Playlists"));
         PlaylistsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -368,7 +372,7 @@ public class MainFrame extends javax.swing.JFrame {
                 PlaylistsListValueChanged(evt);
             }
         });
-        playlistListScrollPane.setViewportView(PlaylistsList);
+        PlaylistListScrollPane.setViewportView(PlaylistsList);
 
         createPlaylistButton.setText("Create Playlist");
         createPlaylistButton.addActionListener(new java.awt.event.ActionListener() {
@@ -399,6 +403,22 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        ClearPlaylistSelectionButton.setText("Clear Playlist Selection");
+        ClearPlaylistSelectionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ClearPlaylistSelectionButtonActionPerformed(evt);
+            }
+        });
+
+        PlaylistTracksList.setBorder(javax.swing.BorderFactory.createTitledBorder("Playlist Tracks"));
+        PlaylistTracksList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        PlaylistTracksList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                PlaylistTracksListValueChanged(evt);
+            }
+        });
+        PlaylistTracksScrollPane.setViewportView(PlaylistTracksList);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -426,10 +446,17 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addComponent(UniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(trackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TrackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(PlaylistListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(75, 75, 75)
+                                .addComponent(ClearPlaylistSelectionButton)))
                         .addGap(18, 18, 18)
-                        .addComponent(playlistListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(PlaylistTracksScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(RemoveTrackButton)
@@ -438,7 +465,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addComponent(createPlaylistButton)
                                 .addGap(21, 21, 21))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(addTrackButton)
+                                .addComponent(AddTrackButton)
                                 .addGap(40, 40, 40))))))
         );
         layout.setVerticalGroup(
@@ -446,30 +473,37 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(addTrackButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(RemoveTrackButton)
-                        .addGap(10, 10, 10)
-                        .addComponent(createPlaylistButton))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(33, 33, 33)
+                                .addComponent(AddTrackButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(RemoveTrackButton)
+                                .addGap(10, 10, 10)
+                                .addComponent(createPlaylistButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(TrackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TotalTracksLengthLabel)
+                            .addComponent(TotalTracksLengthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(NonUniquePlaylistCountLabel)
+                            .addComponent(NonUniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(UniquePlaylistCountLabel)
+                            .addComponent(UniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(trackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(playlistListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(TotalTracksLengthLabel)
-                    .addComponent(TotalTracksLengthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(NonUniquePlaylistCountLabel)
-                    .addComponent(NonUniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(UniquePlaylistCountLabel)
-                    .addComponent(UniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(PlaylistListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ClearPlaylistSelectionButton))
+                            .addComponent(PlaylistTracksScrollPane))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -478,13 +512,13 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addTrackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addTrackButtonActionPerformed
+    private void AddTrackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTrackButtonActionPerformed
         this.PlayPauseButton.setSelected(false);
         this.setTrackFilesCombobox();
         this.setImageFilesCombobox();
         this.add.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_addTrackButtonActionPerformed
+    }//GEN-LAST:event_AddTrackButtonActionPerformed
 
     private void TracksListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_TracksListValueChanged
         if (!evt.getValueIsAdjusting() && this.TracksList.getSelectedValue() != null) {
@@ -571,6 +605,15 @@ public class MainFrame extends javax.swing.JFrame {
             if (found != null) {
                 CreditsFrame frame = new CreditsFrame(found.toString());
                 frame.setVisible(true);
+
+                ArrayList<Track> pTracks = found.getTracks();
+                DefaultListModel model = new DefaultListModel();
+
+                for (Track t : pTracks) {
+                    model.addElement(t.getName());
+                }
+
+                this.PlaylistTracksList.setModel(model);
             }
         }
     }//GEN-LAST:event_PlaylistsListValueChanged
@@ -590,11 +633,26 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_RemoveTrackButtonActionPerformed
 
+    private void ClearPlaylistSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearPlaylistSelectionButtonActionPerformed
+        this.PlaylistsList.clearSelection();
+        this.PlaylistTracksList.setModel(new DefaultListModel());
+    }//GEN-LAST:event_ClearPlaylistSelectionButtonActionPerformed
+
+    private void PlaylistTracksListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_PlaylistTracksListValueChanged
+        if (!evt.getValueIsAdjusting() && this.PlaylistTracksList.getSelectedValue() != null) {
+            String selected = this.PlaylistTracksList.getSelectedValue();
+
+            this.TracksList.setSelectedValue(selected, true);
+        }
+    }//GEN-LAST:event_PlaylistTracksListValueChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddTrackButton;
     private javax.swing.JLabel AlbumNameLabel;
     private javax.swing.JTextField AlbumNameTextField;
     private javax.swing.JLabel ArtistLabel;
     private javax.swing.JTextField ArtistTextField;
+    private javax.swing.JButton ClearPlaylistSelectionButton;
     private javax.swing.JLabel DescriptionLabel;
     private javax.swing.JTextField DescriptionTextField;
     private javax.swing.JLabel EpisodeLabel;
@@ -606,6 +664,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField NonUniquePlaylistCountTextField;
     private javax.swing.JPanel NotPlayingPanel;
     private javax.swing.JToggleButton PlayPauseButton;
+    private javax.swing.JScrollPane PlaylistListScrollPane;
+    private javax.swing.JList<String> PlaylistTracksList;
+    private javax.swing.JScrollPane PlaylistTracksScrollPane;
     private javax.swing.JList<String> PlaylistsList;
     private javax.swing.JPanel PodcastDetailsPanel;
     private javax.swing.JLabel PodcasterLabel;
@@ -618,17 +679,15 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton StopButton;
     private javax.swing.JLabel TotalTracksLengthLabel;
     private javax.swing.JTextField TotalTracksLengthTextField;
+    private javax.swing.JScrollPane TrackListScrollPane;
     private javax.swing.JPanel TrackPlayingPanel;
     private javax.swing.JProgressBar TrackProgressBar;
     private javax.swing.JLabel TrackThumbLabel;
     private javax.swing.JList<String> TracksList;
     private javax.swing.JLabel UniquePlaylistCountLabel;
     private javax.swing.JTextField UniquePlaylistCountTextField;
-    private javax.swing.JButton addTrackButton;
     private javax.swing.JButton createPlaylistButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel notPlayingLabel;
-    private javax.swing.JScrollPane playlistListScrollPane;
-    private javax.swing.JScrollPane trackListScrollPane;
     // End of variables declaration//GEN-END:variables
 }
