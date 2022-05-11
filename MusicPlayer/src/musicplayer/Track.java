@@ -20,8 +20,6 @@ abstract public class Track implements TrackInterface {
     protected File file;
     protected boolean liked;
 
-    abstract void showCredits();
-
     public Track(String name, double length, ImageIcon thumbnailImage, File file) {
         this.name = name;
         this.length = length;
@@ -29,6 +27,8 @@ abstract public class Track implements TrackInterface {
         this.file = file;
         this.liked = false;
     }
+
+    abstract void showCredits();
 
     @Override
     public String toString() {

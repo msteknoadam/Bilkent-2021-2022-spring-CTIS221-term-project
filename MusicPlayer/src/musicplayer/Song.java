@@ -18,16 +18,17 @@ public class Song extends Track {
     private String albumName;
     private String genre;
 
-    @Override
-    public void showCredits() {
-        // Will open a new frame (GUI implementation)
-    }
-
     public Song(String name, double length, ImageIcon thumbnailImage, File file, String artist, String albumName, String genre) {
         super(name, length, thumbnailImage, file);
         this.artist = artist;
         this.albumName = albumName;
         this.genre = genre;
+    }
+
+    @Override
+    public void showCredits() {
+        CreditsFrame frame = new CreditsFrame(this.toString());
+        frame.setVisible(true);
     }
 
     @Override
@@ -38,6 +39,18 @@ public class Song extends Track {
         out += "Genre: " + this.genre + "\n";
 
         return out;
+    }
+
+    public String getArtist() {
+        return this.artist;
+    }
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    public String getGenre() {
+        return genre;
     }
 
 }

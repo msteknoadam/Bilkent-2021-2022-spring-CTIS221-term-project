@@ -18,16 +18,17 @@ public class PodcastEpisode extends Track {
     private String description;
     private String podcaster;
 
-    @Override
-    public void showCredits() {
-        // Will open a new frame (GUI implementation)
-    }
-
     public PodcastEpisode(String name, double length, ImageIcon thumbnailImage, File file, String episode, String description, String podcaster) {
         super(name, length, thumbnailImage, file);
         this.episode = episode;
         this.description = description;
         this.podcaster = podcaster;
+    }
+
+    @Override
+    public void showCredits() {
+        CreditsFrame frame = new CreditsFrame(this.toString());
+        frame.setVisible(true);
     }
 
     @Override
@@ -38,6 +39,18 @@ public class PodcastEpisode extends Track {
         out += "Podcaster: " + this.podcaster + "\n";
 
         return out;
+    }
+
+    public String getEpisode() {
+        return episode;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPodcaster() {
+        return podcaster;
     }
 
 }
