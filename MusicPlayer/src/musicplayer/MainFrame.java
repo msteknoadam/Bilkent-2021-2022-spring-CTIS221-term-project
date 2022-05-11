@@ -79,6 +79,11 @@ public class MainFrame extends javax.swing.JFrame {
         }
 
         this.TracksList.setModel(model);
+
+        int totalSeconds = (int) TrackSys.calculateTotalLength();
+        int minutes = totalSeconds / 60;
+        int leftoverSeconds = totalSeconds % 60;
+        this.TotalTracksLengthTextField.setText(minutes + " minutes " + leftoverSeconds + " seconds");
     }
 
     public void updatePlaylistsList() {
@@ -89,6 +94,9 @@ public class MainFrame extends javax.swing.JFrame {
         }
 
         this.PlaylistsList.setModel(model);
+
+        this.NonUniquePlaylistCountTextField.setText(String.valueOf(Playlist.getPlaylistCount()));
+        this.UniquePlaylistCountTextField.setText(String.valueOf(TrackSys.playlists.size()));
     }
 
     /**
@@ -132,6 +140,12 @@ public class MainFrame extends javax.swing.JFrame {
         playlistListScrollPane = new javax.swing.JScrollPane();
         PlaylistsList = new javax.swing.JList<>();
         createPlaylistButton = new javax.swing.JButton();
+        TotalTracksLengthLabel = new javax.swing.JLabel();
+        TotalTracksLengthTextField = new javax.swing.JTextField();
+        NonUniquePlaylistCountLabel = new javax.swing.JLabel();
+        NonUniquePlaylistCountTextField = new javax.swing.JTextField();
+        UniquePlaylistCountLabel = new javax.swing.JLabel();
+        UniquePlaylistCountTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -356,6 +370,21 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        TotalTracksLengthLabel.setText("Total Tracks Length:");
+
+        TotalTracksLengthTextField.setEditable(false);
+        TotalTracksLengthTextField.setText("0 minutes 0 seconds");
+
+        NonUniquePlaylistCountLabel.setText("Non-Unique Playlist Count:");
+
+        NonUniquePlaylistCountTextField.setEditable(false);
+        NonUniquePlaylistCountTextField.setText("0");
+
+        UniquePlaylistCountLabel.setText("Unique Playlist Count:");
+
+        UniquePlaylistCountTextField.setEditable(false);
+        UniquePlaylistCountTextField.setText("0");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -363,9 +392,6 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(23, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(trackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34)
@@ -376,7 +402,26 @@ public class MainFrame extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(addTrackButton)
                                 .addGap(10, 10, 10)))
-                        .addGap(62, 62, 62))))
+                        .addGap(62, 62, 62))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(TotalTracksLengthLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TotalTracksLengthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(23, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(NonUniquePlaylistCountLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(NonUniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(UniquePlaylistCountLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(UniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -393,7 +438,19 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(playlistListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TotalTracksLengthLabel)
+                    .addComponent(TotalTracksLengthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(NonUniquePlaylistCountLabel)
+                    .addComponent(NonUniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(UniquePlaylistCountLabel)
+                    .addComponent(UniquePlaylistCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -486,17 +543,13 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_createPlaylistButtonActionPerformed
 
     private void PlaylistsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_PlaylistsListValueChanged
-        String selected = this.PlaylistsList.getSelectedValue();
-
-        if (selected != null) {
-            Playlist found = TrackSys.searchPlaylist(selected);
+        if (!evt.getValueIsAdjusting() && this.PlaylistsList.getSelectedValue() != null) {
+            Playlist found = TrackSys.searchPlaylist(this.PlaylistsList.getSelectedValue());
 
             if (found != null) {
                 CreditsFrame frame = new CreditsFrame(found.toString());
                 frame.setVisible(true);
             }
-        } else {
-            //
         }
     }//GEN-LAST:event_PlaylistsListValueChanged
 
@@ -512,6 +565,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel GenreLabel;
     private javax.swing.JTextField GenreTextField;
     private javax.swing.JToggleButton LikeDislikeButton;
+    private javax.swing.JLabel NonUniquePlaylistCountLabel;
+    private javax.swing.JTextField NonUniquePlaylistCountTextField;
     private javax.swing.JPanel NotPlayingPanel;
     private javax.swing.JToggleButton PlayPauseButton;
     private javax.swing.JList<String> PlaylistsList;
@@ -523,10 +578,14 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton ShowCreditsButton;
     private javax.swing.JPanel SongDetailsPanel;
     private javax.swing.JButton StopButton;
+    private javax.swing.JLabel TotalTracksLengthLabel;
+    private javax.swing.JTextField TotalTracksLengthTextField;
     private javax.swing.JPanel TrackPlayingPanel;
     private javax.swing.JProgressBar TrackProgressBar;
     private javax.swing.JLabel TrackThumbLabel;
     private javax.swing.JList<String> TracksList;
+    private javax.swing.JLabel UniquePlaylistCountLabel;
+    private javax.swing.JTextField UniquePlaylistCountTextField;
     private javax.swing.JButton addTrackButton;
     private javax.swing.JButton createPlaylistButton;
     private javax.swing.JPanel jPanel1;

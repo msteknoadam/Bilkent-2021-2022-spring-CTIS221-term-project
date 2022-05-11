@@ -155,6 +155,15 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
         // duplicate playlists are handled by HashSet
         Playlist p = new Playlist(playlistName, playlistDescription);
 
+        for (String trackName : selected) {
+            Track found = TrackSys.searchTrack(trackName);
+
+            if (found != null) {
+                p.addTrack(found);
+            }
+            // technically it's not possible for found to be null but just to be safe
+        }
+
         this.StatusLabel.setText("Playlist added successfully!");
     }//GEN-LAST:event_CreatePlaylistButtonActionPerformed
 
@@ -162,6 +171,7 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
         this.PlaylistNameTextField.setText("");
         this.PlaylistDescriptionTextField.setText("");
         this.TracksList.clearSelection();
+        TrackSys.calculatePlaylistTotals();
         this.mf.updatePlaylistsList();
         this.mf.setVisible(true);
         this.dispose();
