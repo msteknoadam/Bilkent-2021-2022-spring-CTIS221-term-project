@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package musicplayer;
+package Inheritance;
 
+import Interface.TrackInterface;
 import java.io.File;
 import javax.swing.ImageIcon;
 
@@ -28,13 +29,13 @@ abstract public class Track implements TrackInterface {
         this.liked = false;
     }
 
-    abstract void showCredits();
+    abstract public void showCredits();
 
     @Override
     public String toString() {
         String out = "";
         out += "Name: " + this.name + "\n";
-        out += "Length: " + this.length + "\n";
+        out += "Length (in seconds): " + this.length + "\n";
         out += "Liked: " + this.liked + "\n";
 
         return out;
@@ -44,6 +45,22 @@ abstract public class Track implements TrackInterface {
     public boolean toggleLike() {
         this.liked = !this.liked;
         return this.liked;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getLength() {
+        return length;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public ImageIcon getThumbnailImage() {
+        return thumbnailImage;
     }
 
 }

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package musicplayer;
+package SysAndMain;
 
+import GUI.MainFrame;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,16 +28,11 @@ public class MusicPlayerMain {
         ArrayList<String> trackFiles = listSpecificFiles("tracks", ".mp3");
         ArrayList<String> imageFiles = listSpecificFiles("images", ".jpg");
 
-        System.out.println("Track files");
-        System.out.println(trackFiles);
-        System.out.println("Image files");
-        System.out.println(imageFiles);
+        TrackSys.updateTrackPaths(trackFiles);
+        TrackSys.updateImagePaths(imageFiles);
 
         MainFrame mf = new MainFrame();
         mf.setVisible(true);
-
-        mf.setTrackFilesCombobox(trackFiles);
-        mf.setImageFilesCombobox(imageFiles);
     }
 
     public static ArrayList<String> listSpecificFiles(String dir, String suffix) {
@@ -50,7 +46,7 @@ public class MusicPlayerMain {
 
             for (String file : files) {
                 if (file.endsWith(suffix)) {
-                    out.add(file);
+                    out.add(dir + "/" + file);
                 }
             }
 

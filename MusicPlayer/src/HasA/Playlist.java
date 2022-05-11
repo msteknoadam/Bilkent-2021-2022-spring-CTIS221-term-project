@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package musicplayer;
+package HasA;
 
+import SysAndMain.TrackSys;
+import Inheritance.Track;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -48,7 +50,7 @@ public class Playlist {
 
     public boolean addTrack(Track track) {
         for (Track t : tracks) {
-            if (t.name.equalsIgnoreCase(track.name)) {
+            if (t.getName().equalsIgnoreCase(track.getName())) {
                 return false;
             }
         }
@@ -59,7 +61,7 @@ public class Playlist {
 
     public boolean removeTrack(String trackName) {
         for (Track t : tracks) {
-            if (t.name.equalsIgnoreCase(trackName)) {
+            if (t.getName().equalsIgnoreCase(trackName)) {
                 tracks.remove(t);
                 return true;
             }
@@ -111,6 +113,10 @@ public class Playlist {
             return false;
         }
         return true;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
 }
