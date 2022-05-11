@@ -55,7 +55,7 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
         TracksList = new javax.swing.JList<>();
         StatusLabel = new javax.swing.JLabel();
         CloseButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        InfoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,7 +80,7 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Press Enter on Playlist Name Input to Create Playlist!");
+        InfoLabel.setText("Press Enter on Playlist Name Input to Create Playlist!");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -103,7 +103,7 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jLabel1)
+                        .addComponent(InfoLabel)
                         .addGap(18, 18, 18)
                         .addComponent(CloseButton))
                     .addComponent(StatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -129,7 +129,7 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CloseButton)
-                    .addComponent(jLabel1))
+                    .addComponent(InfoLabel))
                 .addContainerGap())
         );
 
@@ -182,6 +182,7 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CloseButton;
+    private javax.swing.JLabel InfoLabel;
     private javax.swing.JLabel PlaylistDescriptionLabel;
     private javax.swing.JTextField PlaylistDescriptionTextField;
     private javax.swing.JLabel PlaylistNameLabel;
@@ -189,7 +190,6 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
     private javax.swing.JLabel StatusLabel;
     private javax.swing.JLabel TracksLabel;
     private javax.swing.JList<String> TracksList;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
