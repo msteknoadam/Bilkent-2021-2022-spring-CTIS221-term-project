@@ -479,6 +479,7 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addTrackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addTrackButtonActionPerformed
+        this.PlayPauseButton.setSelected(false);
         this.setTrackFilesCombobox();
         this.setImageFilesCombobox();
         this.add.setVisible(true);
@@ -557,6 +558,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_PlayPauseButtonActionPerformed
 
     private void createPlaylistButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPlaylistButtonActionPerformed
+        this.PlayPauseButton.setSelected(false);
         this.createP.updateTracksList();
         this.createP.setVisible(true);
         this.setVisible(false);
