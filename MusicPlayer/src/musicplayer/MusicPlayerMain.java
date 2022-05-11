@@ -5,6 +5,15 @@
  */
 package musicplayer;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  *
  * @author TEKNO
@@ -15,7 +24,41 @@ public class MusicPlayerMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // Will open the MainFrame once it's implemented (GUI)
+        ArrayList<String> trackFiles = listSpecificFiles("tracks", ".mp3");
+        ArrayList<String> imageFiles = listSpecificFiles("images", ".jpg");
+
+        System.out.println("Track files");
+        System.out.println(trackFiles);
+        System.out.println("Image files");
+        System.out.println(imageFiles);
+
+        MainFrame mf = new MainFrame();
+        mf.setVisible(true);
+
+        mf.setTrackFilesCombobox(trackFiles);
+        mf.setImageFilesCombobox(imageFiles);
+    }
+
+    public static ArrayList<String> listSpecificFiles(String dir, String suffix) {
+        ArrayList<String> out = new ArrayList();
+        try (Stream<Path> stream = Files.walk(Paths.get(dir), 1)) {
+            Set<String> files = stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toSet());
+
+            for (String file : files) {
+                if (file.endsWith(suffix)) {
+                    out.add(file);
+                }
+            }
+
+            return out;
+        } catch (IOException ex) {
+            System.err.printf("Couldn't find any files ending with suffix '%s' in directory '%s'.", suffix, dir);
+            return out;
+        }
     }
 
 }
