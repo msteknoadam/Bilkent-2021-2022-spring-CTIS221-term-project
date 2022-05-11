@@ -309,6 +309,19 @@ public class AddTrackFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.jTextField1.setText("");
+        this.jTextField2.setText("");
+        this.jTextField3.setText("");
+        this.jTextField4.setText("");
+        this.jTextField5.setText("");
+        this.jTextField6.setText("");
+        this.jTextField7.setText("");
+        this.jTextField8.setText("");
+        this.jRadioButton1.setSelected(true);
+        this.jRadioButton2.setSelected(false);
+        this.jComboBox1.setSelectedIndex(0);
+        this.jComboBox2.setSelectedIndex(0);
+        this.statusLabel.setText("");
         this.mf.updateTracksList();
         this.mf.setVisible(true);
         this.dispose();
@@ -319,7 +332,7 @@ public class AddTrackFrame extends javax.swing.JFrame {
 
         String trackName = this.jTextField1.getText();
         String trackLengthTxt = this.jTextField8.getText();
-        String trackPath = "songs/" + this.jComboBox1.getSelectedItem().toString();
+        String trackPath = "tracks/" + this.jComboBox1.getSelectedItem().toString();
         String imagePath = "images/" + this.jComboBox2.getSelectedItem().toString();
 
         if (trackName.equals("") || trackLengthTxt.equals("") || trackPath.equals("") || imagePath.equals("")) {
@@ -328,14 +341,13 @@ public class AddTrackFrame extends javax.swing.JFrame {
         }
 
         String[] lengthSplit = trackLengthTxt.split(":");
-        if (lengthSplit.length != 2) {
+        if (lengthSplit.length != 2 || lengthSplit[1].length() != 2) {
             this.statusLabel.setText("Malformatted track length. Should be formatted like mm:ss");
             return;
         }
 
         int lengthInSeconds = Integer.parseInt(lengthSplit[0]) * 60 + Integer.parseInt(lengthSplit[1]);
         File trackFile = new File(trackPath);
-//        ImageIcon image = new ImageIcon(imagePath);
         ImageIcon image = new ImageIcon(new ImageIcon(imagePath).getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH));
 
         if (trackType.equals("Song")) {

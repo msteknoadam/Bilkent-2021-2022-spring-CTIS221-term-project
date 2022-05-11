@@ -5,7 +5,8 @@
  */
 package musicplayer;
 
-import java.util.ArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 
@@ -18,6 +19,7 @@ public class MainFrame extends javax.swing.JFrame {
     AddTrackFrame add = new AddTrackFrame(this);
 
     Track currentlyPlayingTrack = null;
+    int progressSecondsPassed = 0;
 
     /**
      * Creates new form MainFrame
@@ -25,28 +27,43 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         this.NotPlayingPanel.setVisible(true);
-        this.SongPlayingPanel.setVisible(false);
-        this.PodcastPlayingPanel.setVisible(false);
+        this.TrackPlayingPanel.setVisible(false);
+        this.SongDetailsPanel.setVisible(false);
+        this.PodcastDetailsPanel.setVisible(false);
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+        executor.scheduleAtFixedRate(() -> this.updateProgressBar(), 0, 1, TimeUnit.SECONDS);
     }
 
-    public void setTrackFilesCombobox(ArrayList<String> trackFiles) {
-        String[] arr = new String[trackFiles.size()];
+    public void updateProgressBar() {
+        if (this.currentlyPlayingTrack != null && this.PlayPauseButton.isSelected()) {
+            if (this.progressSecondsPassed < this.currentlyPlayingTrack.length) {
+                this.progressSecondsPassed++;
+                this.TrackProgressBar.setValue((int) Math.round(this.progressSecondsPassed / this.currentlyPlayingTrack.length * 100));
+            } else {
+                this.PlayPauseButton.setSelected(false);
+                this.TrackProgressBar.setValue(100);
+            }
+        }
+    }
+
+    public void setTrackFilesCombobox() {
+        String[] arr = new String[TrackSys.trackPaths.size()];
 
         int i = 0;
-        for (String file : trackFiles) {
-            arr[i] = file;
+        for (String file : TrackSys.trackPaths) {
+            arr[i] = file.split("/")[1]; // so that directory part is removed
             i++;
         }
 
         this.add.getTrackFileCombobox().setModel(new DefaultComboBoxModel(arr));
     }
 
-    public void setImageFilesCombobox(ArrayList<String> imageFiles) {
-        String[] arr = new String[imageFiles.size()];
+    public void setImageFilesCombobox() {
+        String[] arr = new String[TrackSys.imagePaths.size()];
 
         int i = 0;
-        for (String file : imageFiles) {
-            arr[i] = file;
+        for (String file : TrackSys.imagePaths) {
+            arr[i] = file.split("/")[1]; // so that directory part is removed
             i++;
         }
 
@@ -60,7 +77,7 @@ public class MainFrame extends javax.swing.JFrame {
             model.addElement(t.name);
         }
 
-        this.tracksList.setModel(model);
+        this.TracksList.setModel(model);
     }
 
     /**
@@ -75,37 +92,32 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         NotPlayingPanel = new javax.swing.JPanel();
         notPlayingLabel = new javax.swing.JLabel();
-        SongPlayingPanel = new javax.swing.JPanel();
-        songThumbLabel = new javax.swing.JLabel();
-        songProgressBar = new javax.swing.JProgressBar();
-        SeekSongStartButton = new javax.swing.JButton();
-        SeekSongEndButton = new javax.swing.JButton();
-        PlayPauseButton_S = new javax.swing.JToggleButton();
+        TrackPlayingPanel = new javax.swing.JPanel();
+        TrackThumbLabel = new javax.swing.JLabel();
+        TrackProgressBar = new javax.swing.JProgressBar();
+        ShowCreditsButton = new javax.swing.JButton();
+        SeekTrackStartButton = new javax.swing.JButton();
+        SeekTrackEndButton = new javax.swing.JButton();
+        PlayPauseButton = new javax.swing.JToggleButton();
+        LikeDislikeButton = new javax.swing.JToggleButton();
+        StopButton = new javax.swing.JButton();
+        SongDetailsPanel = new javax.swing.JPanel();
         ArtistLabel = new javax.swing.JLabel();
         AlbumNameLabel = new javax.swing.JLabel();
         GenreLabel = new javax.swing.JLabel();
-        LikeDislikeButton_S = new javax.swing.JToggleButton();
         ArtistTextField = new javax.swing.JTextField();
         AlbumNameTextField = new javax.swing.JTextField();
         GenreTextField = new javax.swing.JTextField();
-        showCreditsButton_S = new javax.swing.JButton();
-        PodcastPlayingPanel = new javax.swing.JPanel();
-        podcastThumbLabel = new javax.swing.JLabel();
-        podcastProgressBar = new javax.swing.JProgressBar();
-        SeekPodcastStartButton = new javax.swing.JButton();
-        SeekPodcastEndButton = new javax.swing.JButton();
-        PlayPauseButton_P = new javax.swing.JToggleButton();
-        episodeLabel = new javax.swing.JLabel();
-        descriptionLabel = new javax.swing.JLabel();
-        podcasterLabel = new javax.swing.JLabel();
-        LikeDislikeButton_P = new javax.swing.JToggleButton();
+        PodcastDetailsPanel = new javax.swing.JPanel();
+        EpisodeLabel = new javax.swing.JLabel();
+        DescriptionLabel = new javax.swing.JLabel();
+        PodcasterLabel = new javax.swing.JLabel();
         EpisodeTextField = new javax.swing.JTextField();
         DescriptionTextField = new javax.swing.JTextField();
         PodcasterTextField = new javax.swing.JTextField();
-        showCreditsButton_P = new javax.swing.JButton();
         addTrackButton = new javax.swing.JButton();
         trackListScrollPane = new javax.swing.JScrollPane();
-        tracksList = new javax.swing.JList<>();
+        TracksList = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -134,13 +146,67 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel1.add(NotPlayingPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 160));
 
-        songThumbLabel.setText("SongThumbnail");
+        TrackPlayingPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        SeekSongStartButton.setText("<");
+        TrackThumbLabel.setText("TrackThumbnail");
+        TrackPlayingPanel.add(TrackThumbLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 140, 120));
+        TrackThumbLabel.getAccessibleContext().setAccessibleParent(TrackPlayingPanel);
 
-        SeekSongEndButton.setText(">");
+        TrackPlayingPanel.add(TrackProgressBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 100, 540, -1));
+        TrackProgressBar.getAccessibleContext().setAccessibleParent(TrackPlayingPanel);
 
-        PlayPauseButton_S.setText("PLAY");
+        ShowCreditsButton.setText("Show Credits");
+        ShowCreditsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ShowCreditsButtonActionPerformed(evt);
+            }
+        });
+        TrackPlayingPanel.add(ShowCreditsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 60, -1, -1));
+        ShowCreditsButton.getAccessibleContext().setAccessibleParent(TrackPlayingPanel);
+
+        SeekTrackStartButton.setText("<");
+        SeekTrackStartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SeekTrackStartButtonActionPerformed(evt);
+            }
+        });
+        TrackPlayingPanel.add(SeekTrackStartButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 60, -1, -1));
+        SeekTrackStartButton.getAccessibleContext().setAccessibleParent(TrackPlayingPanel);
+
+        SeekTrackEndButton.setText(">");
+        SeekTrackEndButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SeekTrackEndButtonActionPerformed(evt);
+            }
+        });
+        TrackPlayingPanel.add(SeekTrackEndButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 60, -1, -1));
+        SeekTrackEndButton.getAccessibleContext().setAccessibleParent(TrackPlayingPanel);
+
+        PlayPauseButton.setText("PLAY");
+        PlayPauseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PlayPauseButtonActionPerformed(evt);
+            }
+        });
+        TrackPlayingPanel.add(PlayPauseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, -1, -1));
+        PlayPauseButton.getAccessibleContext().setAccessibleParent(TrackPlayingPanel);
+
+        LikeDislikeButton.setText("LIKE");
+        LikeDislikeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LikeDislikeButtonActionPerformed(evt);
+            }
+        });
+        TrackPlayingPanel.add(LikeDislikeButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 60, -1, -1));
+        LikeDislikeButton.getAccessibleContext().setAccessibleParent(TrackPlayingPanel);
+
+        StopButton.setText("STOP");
+        StopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StopButtonActionPerformed(evt);
+            }
+        });
+        TrackPlayingPanel.add(StopButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 60, -1, -1));
 
         ArtistLabel.setText("Artist:");
 
@@ -148,203 +214,101 @@ public class MainFrame extends javax.swing.JFrame {
 
         GenreLabel.setText("Genre:");
 
-        LikeDislikeButton_S.setText("LIKE");
-        LikeDislikeButton_S.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LikeDislikeButton_SActionPerformed(evt);
-            }
-        });
-
+        ArtistTextField.setEditable(false);
         ArtistTextField.setText("ArtistTextField");
 
+        AlbumNameTextField.setEditable(false);
         AlbumNameTextField.setText("AlbumNameTextField");
 
+        GenreTextField.setEditable(false);
         GenreTextField.setText("GenreTextField");
 
-        showCreditsButton_S.setText("Show Credits");
-        showCreditsButton_S.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showCreditsButton_SActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout SongPlayingPanelLayout = new javax.swing.GroupLayout(SongPlayingPanel);
-        SongPlayingPanel.setLayout(SongPlayingPanelLayout);
-        SongPlayingPanelLayout.setHorizontalGroup(
-            SongPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SongPlayingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(songThumbLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48)
-                .addGroup(SongPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(SongPlayingPanelLayout.createSequentialGroup()
-                        .addComponent(songProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SongPlayingPanelLayout.createSequentialGroup()
-                        .addGroup(SongPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(SongPlayingPanelLayout.createSequentialGroup()
-                                .addComponent(ArtistLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(ArtistTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                                .addComponent(AlbumNameLabel))
-                            .addGroup(SongPlayingPanelLayout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(showCreditsButton_S)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(SeekSongStartButton)
-                                .addGap(4, 4, 4)
-                                .addComponent(PlayPauseButton_S)))
-                        .addGroup(SongPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(SongPlayingPanelLayout.createSequentialGroup()
-                                .addGap(3, 3, 3)
-                                .addComponent(AlbumNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(GenreLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(GenreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(51, 51, 51))
-                            .addGroup(SongPlayingPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(SeekSongEndButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(LikeDislikeButton_S)
-                                .addGap(110, 110, 110))))))
+        javax.swing.GroupLayout SongDetailsPanelLayout = new javax.swing.GroupLayout(SongDetailsPanel);
+        SongDetailsPanel.setLayout(SongDetailsPanelLayout);
+        SongDetailsPanelLayout.setHorizontalGroup(
+            SongDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SongDetailsPanelLayout.createSequentialGroup()
+                .addContainerGap(184, Short.MAX_VALUE)
+                .addComponent(ArtistLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ArtistTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(AlbumNameLabel)
+                .addGap(18, 18, 18)
+                .addComponent(AlbumNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(GenreLabel)
+                .addGap(18, 18, 18)
+                .addComponent(GenreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(66, 66, 66))
         );
-        SongPlayingPanelLayout.setVerticalGroup(
-            SongPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SongPlayingPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(SongPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        SongDetailsPanelLayout.setVerticalGroup(
+            SongDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(SongDetailsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(SongDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ArtistLabel)
                     .addComponent(AlbumNameLabel)
                     .addComponent(GenreLabel)
                     .addComponent(ArtistTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AlbumNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(GenreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(SongPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SongPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(SeekSongStartButton)
-                        .addComponent(SeekSongEndButton)
-                        .addComponent(PlayPauseButton_S)
-                        .addComponent(LikeDislikeButton_S))
-                    .addComponent(showCreditsButton_S, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(songProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SongPlayingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(songThumbLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(SongPlayingPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 160));
+        TrackPlayingPanel.add(SongDetailsPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 160));
 
-        podcastThumbLabel.setText("PodcastThumbnail");
+        EpisodeLabel.setText("Episode:");
 
-        SeekPodcastStartButton.setText("<");
+        DescriptionLabel.setText("Description:");
 
-        SeekPodcastEndButton.setText(">");
+        PodcasterLabel.setText("Podcaster:");
 
-        PlayPauseButton_P.setText("PLAY");
-
-        episodeLabel.setText("Episode:");
-
-        descriptionLabel.setText("Description:");
-
-        podcasterLabel.setText("Podcaster:");
-
-        LikeDislikeButton_P.setText("LIKE");
-        LikeDislikeButton_P.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LikeDislikeButton_PActionPerformed(evt);
-            }
-        });
-
+        EpisodeTextField.setEditable(false);
         EpisodeTextField.setText("EpisodeTextField");
 
+        DescriptionTextField.setEditable(false);
         DescriptionTextField.setText("DescriptionTextField");
 
+        PodcasterTextField.setEditable(false);
         PodcasterTextField.setText("PodcasterTextField");
 
-        showCreditsButton_P.setText("Show Credits");
-        showCreditsButton_P.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showCreditsButton_PActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout PodcastPlayingPanelLayout = new javax.swing.GroupLayout(PodcastPlayingPanel);
-        PodcastPlayingPanel.setLayout(PodcastPlayingPanelLayout);
-        PodcastPlayingPanelLayout.setHorizontalGroup(
-            PodcastPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(podcastThumbLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
-                .addGroup(PodcastPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                        .addComponent(podcastProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                        .addGroup(PodcastPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                                .addComponent(episodeLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(EpisodeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(descriptionLabel))
-                            .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                                .addComponent(showCreditsButton_P)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(SeekPodcastStartButton)
-                                .addGap(4, 4, 4)
-                                .addComponent(PlayPauseButton_P)))
-                        .addGroup(PodcastPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                                .addGap(3, 3, 3)
-                                .addComponent(DescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(podcasterLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(PodcasterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(SeekPodcastEndButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(LikeDislikeButton_P)
-                                .addGap(59, 59, 59)))))
-                .addGap(58, 58, 58))
+        javax.swing.GroupLayout PodcastDetailsPanelLayout = new javax.swing.GroupLayout(PodcastDetailsPanel);
+        PodcastDetailsPanel.setLayout(PodcastDetailsPanelLayout);
+        PodcastDetailsPanelLayout.setHorizontalGroup(
+            PodcastDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PodcastDetailsPanelLayout.createSequentialGroup()
+                .addGap(145, 145, 145)
+                .addComponent(EpisodeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(EpisodeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(DescriptionLabel)
+                .addGap(3, 3, 3)
+                .addComponent(DescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(PodcasterLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(PodcasterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(86, Short.MAX_VALUE))
         );
-        PodcastPlayingPanelLayout.setVerticalGroup(
-            PodcastPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(PodcastPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(episodeLabel)
-                    .addComponent(descriptionLabel)
-                    .addComponent(podcasterLabel)
+        PodcastDetailsPanelLayout.setVerticalGroup(
+            PodcastDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PodcastDetailsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PodcastDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(EpisodeLabel)
+                    .addComponent(DescriptionLabel)
+                    .addComponent(PodcasterLabel)
                     .addComponent(EpisodeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(PodcasterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(PodcastPlayingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SeekPodcastStartButton)
-                    .addComponent(SeekPodcastEndButton)
-                    .addComponent(PlayPauseButton_P)
-                    .addComponent(LikeDislikeButton_P)
-                    .addComponent(showCreditsButton_P))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(podcastProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28))
-            .addGroup(PodcastPlayingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(podcastThumbLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(PodcastPlayingPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 160));
+        TrackPlayingPanel.add(PodcastDetailsPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 160));
+
+        jPanel1.add(TrackPlayingPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 160));
 
         addTrackButton.setText("Add Track");
         addTrackButton.addActionListener(new java.awt.event.ActionListener() {
@@ -353,13 +317,13 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        tracksList.setBorder(javax.swing.BorderFactory.createTitledBorder("Added Tracks"));
-        tracksList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+        TracksList.setBorder(javax.swing.BorderFactory.createTitledBorder("Added Tracks"));
+        TracksList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                tracksListValueChanged(evt);
+                TracksListValueChanged(evt);
             }
         });
-        trackListScrollPane.setViewportView(tracksList);
+        trackListScrollPane.setViewportView(TracksList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -396,100 +360,112 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addTrackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addTrackButtonActionPerformed
+        this.setTrackFilesCombobox();
+        this.setImageFilesCombobox();
         this.add.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_addTrackButtonActionPerformed
 
-    private void tracksListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_tracksListValueChanged
-        if (!evt.getValueIsAdjusting() && this.tracksList.getSelectedValue() != null) {
-            Track found = TrackSys.searchTrack(this.tracksList.getSelectedValue());
+    private void TracksListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_TracksListValueChanged
+        if (!evt.getValueIsAdjusting() && this.TracksList.getSelectedValue() != null) {
+            Track found = TrackSys.searchTrack(this.TracksList.getSelectedValue());
 
             if (found != null) {
-                if (found instanceof Song) {
-                    this.currentlyPlayingTrack = found;
-                    this.NotPlayingPanel.setVisible(false);
-                    this.SongPlayingPanel.setVisible(true);
-                    this.PodcastPlayingPanel.setVisible(false);
+                this.currentlyPlayingTrack = found;
+                this.progressSecondsPassed = 0;
+                this.TrackProgressBar.setValue(0);
+                this.NotPlayingPanel.setVisible(false);
+                this.TrackPlayingPanel.setVisible(true);
+                this.LikeDislikeButton.setSelected(found.liked);
+                this.TrackThumbLabel.setIcon(found.thumbnailImage);
 
-                    this.LikeDislikeButton_S.setSelected(((Song) found).liked);
-                    this.songThumbLabel.setIcon(((Song) found).thumbnailImage);
+                if (found instanceof Song) {
+                    this.SongDetailsPanel.setVisible(true);
+                    this.PodcastDetailsPanel.setVisible(false);
+
                     this.ArtistTextField.setText(((Song) found).getArtist());
                     this.AlbumNameTextField.setText(((Song) found).getAlbumName());
                     this.GenreTextField.setText(((Song) found).getGenre());
                 } else if (found instanceof PodcastEpisode) {
-                    this.currentlyPlayingTrack = found;
-                    this.NotPlayingPanel.setVisible(false);
-                    this.SongPlayingPanel.setVisible(false);
-                    this.PodcastPlayingPanel.setVisible(true);
+                    this.PodcastDetailsPanel.setVisible(true);
+                    this.SongDetailsPanel.setVisible(false);
 
-                    this.LikeDislikeButton_P.setSelected(((PodcastEpisode) found).liked);
-                    this.podcastThumbLabel.setIcon(((PodcastEpisode) found).thumbnailImage);
                     this.EpisodeTextField.setText(((PodcastEpisode) found).getEpisode());
                     this.DescriptionTextField.setText(((PodcastEpisode) found).getDescription());
                     this.PodcasterTextField.setText(((PodcastEpisode) found).getPodcaster());
                 }
             }
         }
-    }//GEN-LAST:event_tracksListValueChanged
+    }//GEN-LAST:event_TracksListValueChanged
 
-    private void LikeDislikeButton_PActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LikeDislikeButton_PActionPerformed
+    private void LikeDislikeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LikeDislikeButtonActionPerformed
         if (this.currentlyPlayingTrack != null) {
-            this.LikeDislikeButton_P.setSelected(this.currentlyPlayingTrack.toggleLike());
+            this.LikeDislikeButton.setSelected(this.currentlyPlayingTrack.toggleLike());
         }
-    }//GEN-LAST:event_LikeDislikeButton_PActionPerformed
+    }//GEN-LAST:event_LikeDislikeButtonActionPerformed
 
-    private void LikeDislikeButton_SActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LikeDislikeButton_SActionPerformed
-        if (this.currentlyPlayingTrack != null) {
-            this.LikeDislikeButton_S.setSelected(this.currentlyPlayingTrack.toggleLike());
-        }
-    }//GEN-LAST:event_LikeDislikeButton_SActionPerformed
-
-    private void showCreditsButton_PActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showCreditsButton_PActionPerformed
+    private void ShowCreditsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowCreditsButtonActionPerformed
         if (this.currentlyPlayingTrack != null) {
             this.currentlyPlayingTrack.showCredits();
         }
-    }//GEN-LAST:event_showCreditsButton_PActionPerformed
+    }//GEN-LAST:event_ShowCreditsButtonActionPerformed
 
-    private void showCreditsButton_SActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showCreditsButton_SActionPerformed
+    private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopButtonActionPerformed
+        this.currentlyPlayingTrack = null;
+        this.PlayPauseButton.setSelected(false);
+        this.TracksList.clearSelection();
+        this.NotPlayingPanel.setVisible(true);
+        this.TrackPlayingPanel.setVisible(false);
+        this.SongDetailsPanel.setVisible(false);
+        this.PodcastDetailsPanel.setVisible(false);
+    }//GEN-LAST:event_StopButtonActionPerformed
+
+    private void SeekTrackStartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeekTrackStartButtonActionPerformed
+        this.progressSecondsPassed = 0;
+        this.TrackProgressBar.setValue(0);
+    }//GEN-LAST:event_SeekTrackStartButtonActionPerformed
+
+    private void SeekTrackEndButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeekTrackEndButtonActionPerformed
         if (this.currentlyPlayingTrack != null) {
-            this.currentlyPlayingTrack.showCredits();
+            this.progressSecondsPassed = (int) this.currentlyPlayingTrack.length;
         }
-    }//GEN-LAST:event_showCreditsButton_SActionPerformed
+    }//GEN-LAST:event_SeekTrackEndButtonActionPerformed
+
+    private void PlayPauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayPauseButtonActionPerformed
+        if (this.TrackProgressBar.getValue() == 100) {
+            this.progressSecondsPassed = 0;
+        }
+    }//GEN-LAST:event_PlayPauseButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AlbumNameLabel;
     private javax.swing.JTextField AlbumNameTextField;
     private javax.swing.JLabel ArtistLabel;
     private javax.swing.JTextField ArtistTextField;
+    private javax.swing.JLabel DescriptionLabel;
     private javax.swing.JTextField DescriptionTextField;
+    private javax.swing.JLabel EpisodeLabel;
     private javax.swing.JTextField EpisodeTextField;
     private javax.swing.JLabel GenreLabel;
     private javax.swing.JTextField GenreTextField;
-    private javax.swing.JToggleButton LikeDislikeButton_P;
-    private javax.swing.JToggleButton LikeDislikeButton_S;
+    private javax.swing.JToggleButton LikeDislikeButton;
     private javax.swing.JPanel NotPlayingPanel;
-    private javax.swing.JToggleButton PlayPauseButton_P;
-    private javax.swing.JToggleButton PlayPauseButton_S;
-    private javax.swing.JPanel PodcastPlayingPanel;
+    private javax.swing.JToggleButton PlayPauseButton;
+    private javax.swing.JPanel PodcastDetailsPanel;
+    private javax.swing.JLabel PodcasterLabel;
     private javax.swing.JTextField PodcasterTextField;
-    private javax.swing.JButton SeekPodcastEndButton;
-    private javax.swing.JButton SeekPodcastStartButton;
-    private javax.swing.JButton SeekSongEndButton;
-    private javax.swing.JButton SeekSongStartButton;
-    private javax.swing.JPanel SongPlayingPanel;
+    private javax.swing.JButton SeekTrackEndButton;
+    private javax.swing.JButton SeekTrackStartButton;
+    private javax.swing.JButton ShowCreditsButton;
+    private javax.swing.JPanel SongDetailsPanel;
+    private javax.swing.JButton StopButton;
+    private javax.swing.JPanel TrackPlayingPanel;
+    private javax.swing.JProgressBar TrackProgressBar;
+    private javax.swing.JLabel TrackThumbLabel;
+    private javax.swing.JList<String> TracksList;
     private javax.swing.JButton addTrackButton;
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JLabel episodeLabel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel notPlayingLabel;
-    private javax.swing.JProgressBar podcastProgressBar;
-    private javax.swing.JLabel podcastThumbLabel;
-    private javax.swing.JLabel podcasterLabel;
-    private javax.swing.JButton showCreditsButton_P;
-    private javax.swing.JButton showCreditsButton_S;
-    private javax.swing.JProgressBar songProgressBar;
-    private javax.swing.JLabel songThumbLabel;
     private javax.swing.JScrollPane trackListScrollPane;
-    private javax.swing.JList<String> tracksList;
     // End of variables declaration//GEN-END:variables
 }

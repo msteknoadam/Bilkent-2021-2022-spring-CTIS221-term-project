@@ -34,7 +34,7 @@ abstract public class Track implements TrackInterface {
     public String toString() {
         String out = "";
         out += "Name: " + this.name + "\n";
-        out += "Length: " + this.length + "\n";
+        out += "Length (in seconds): " + this.length + "\n";
         out += "Liked: " + this.liked + "\n";
 
         return out;

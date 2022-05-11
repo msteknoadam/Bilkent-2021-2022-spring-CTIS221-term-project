@@ -7,6 +7,7 @@ package musicplayer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  *
@@ -16,6 +17,16 @@ public class TrackSys {
 
     public static ArrayList<Track> tracks = new ArrayList();
     public static HashSet<Playlist> playlists = new HashSet();
+    public static TreeSet<String> trackPaths = new TreeSet();
+    public static TreeSet<String> imagePaths = new TreeSet();
+
+    public static void updateTrackPaths(ArrayList<String> list) {
+        trackPaths.addAll(list);
+    }
+
+    public static void updateImagePaths(ArrayList<String> list) {
+        imagePaths.addAll(list);
+    }
 
     public static boolean addTrack(Track track) {
         for (Track t : tracks) {
