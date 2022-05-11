@@ -54,8 +54,8 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         TracksList = new javax.swing.JList<>();
         StatusLabel = new javax.swing.JLabel();
-        CreatePlaylistButton = new javax.swing.JButton();
         CloseButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,16 +63,15 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
 
         PlaylistDescriptionLabel.setText("Playlist Description:");
 
+        PlaylistNameTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                PlaylistNameTextFieldKeyPressed(evt);
+            }
+        });
+
         TracksLabel.setText("Tracks:");
 
         jScrollPane1.setViewportView(TracksList);
-
-        CreatePlaylistButton.setText("Create Playlist");
-        CreatePlaylistButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreatePlaylistButtonActionPerformed(evt);
-            }
-        });
 
         CloseButton.setText("Close");
         CloseButton.addActionListener(new java.awt.event.ActionListener() {
@@ -81,36 +80,34 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Press Enter on Playlist Name Input to Create Playlist!");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(PlaylistNameLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(PlaylistNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(PlaylistDescriptionLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(PlaylistDescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(TracksLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(PlaylistNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(PlaylistNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(CreatePlaylistButton)
-                        .addGap(84, 84, 84)
+                        .addComponent(PlaylistDescriptionLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(PlaylistDescriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(TracksLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
                         .addComponent(CloseButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(StatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(40, Short.MAX_VALUE))
+                    .addComponent(StatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,48 +128,18 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
                 .addComponent(StatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(CreatePlaylistButton)
-                    .addComponent(CloseButton))
+                    .addComponent(CloseButton)
+                    .addComponent(jLabel1))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void CreatePlaylistButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreatePlaylistButtonActionPerformed
-        String playlistName = this.PlaylistNameTextField.getText();
-        String playlistDescription = this.PlaylistDescriptionTextField.getText();
-
-        List<String> selected = this.TracksList.getSelectedValuesList();
-
-        if (playlistName.equals("") || playlistDescription.equals("")) {
-            this.StatusLabel.setText("Please fill in all of the fields.");
-            return;
-        }
-
-        if (selected.isEmpty()) {
-            this.StatusLabel.setText("Please select at least one track to be included in the playlist.");
-            return;
-        }
-
-        // duplicate playlists are handled by HashSet
-        Playlist p = new Playlist(playlistName, playlistDescription);
-
-        for (String trackName : selected) {
-            Track found = TrackSys.searchTrack(trackName);
-
-            if (found != null) {
-                p.addTrack(found);
-            }
-            // technically it's not possible for found to be null but just to be safe
-        }
-
-        this.StatusLabel.setText("Playlist added successfully!");
-    }//GEN-LAST:event_CreatePlaylistButtonActionPerformed
-
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
         this.PlaylistNameTextField.setText("");
         this.PlaylistDescriptionTextField.setText("");
+        this.StatusLabel.setText("");
         this.TracksList.clearSelection();
         TrackSys.calculatePlaylistTotals();
         this.mf.updatePlaylistsList();
@@ -180,9 +147,41 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_CloseButtonActionPerformed
 
+    private void PlaylistNameTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PlaylistNameTextFieldKeyPressed
+        if (evt.getKeyCode() == 10) { // keycode 10 is Enter
+            String playlistName = this.PlaylistNameTextField.getText();
+            String playlistDescription = this.PlaylistDescriptionTextField.getText();
+
+            List<String> selected = this.TracksList.getSelectedValuesList();
+
+            if (playlistName.equals("") || playlistDescription.equals("")) {
+                this.StatusLabel.setText("Please fill in all of the fields.");
+                return;
+            }
+
+            if (selected.isEmpty()) {
+                this.StatusLabel.setText("Please select at least one track to be included in the playlist.");
+                return;
+            }
+
+            // duplicate playlists are handled by HashSet
+            Playlist p = new Playlist(playlistName, playlistDescription);
+
+            for (String trackName : selected) {
+                Track found = TrackSys.searchTrack(trackName);
+
+                if (found != null) {
+                    p.addTrack(found);
+                }
+                // technically it's not possible for found to be null but just to be safe
+            }
+
+            this.StatusLabel.setText("Playlist added successfully!");
+        }
+    }//GEN-LAST:event_PlaylistNameTextFieldKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CloseButton;
-    private javax.swing.JButton CreatePlaylistButton;
     private javax.swing.JLabel PlaylistDescriptionLabel;
     private javax.swing.JTextField PlaylistDescriptionTextField;
     private javax.swing.JLabel PlaylistNameLabel;
@@ -190,6 +189,7 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
     private javax.swing.JLabel StatusLabel;
     private javax.swing.JLabel TracksLabel;
     private javax.swing.JList<String> TracksList;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
