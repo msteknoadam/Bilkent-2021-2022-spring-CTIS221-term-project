@@ -48,7 +48,7 @@ public class Playlist {
 
     public boolean addTrack(Track track) {
         for (Track t : tracks) {
-            if (t.name.equalsIgnoreCase(track.name)) {
+            if (t.getName().equalsIgnoreCase(track.getName())) {
                 return false;
             }
         }
@@ -59,7 +59,7 @@ public class Playlist {
 
     public boolean removeTrack(String trackName) {
         for (Track t : tracks) {
-            if (t.name.equalsIgnoreCase(trackName)) {
+            if (t.getName().equalsIgnoreCase(trackName)) {
                 tracks.remove(t);
                 return true;
             }

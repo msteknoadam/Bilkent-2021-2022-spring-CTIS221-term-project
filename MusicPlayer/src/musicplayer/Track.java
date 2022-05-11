@@ -46,4 +46,20 @@ abstract public class Track implements TrackInterface {
         return this.liked;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public double getLength() {
+        return length;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public ImageIcon getThumbnailImage() {
+        return thumbnailImage;
+    }
+
 }

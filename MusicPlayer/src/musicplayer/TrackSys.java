@@ -30,7 +30,7 @@ public class TrackSys {
 
     public static boolean addTrack(Track track) {
         for (Track t : tracks) {
-            if (t.name.equalsIgnoreCase(track.name)) {
+            if (t.getName().equalsIgnoreCase(track.getName())) {
                 return false;
             }
         }
@@ -41,8 +41,15 @@ public class TrackSys {
 
     public static boolean deleteTrack(String trackName) {
         for (Track t : tracks) {
-            if (t.name.equalsIgnoreCase(trackName)) {
+            if (t.getName().equalsIgnoreCase(trackName)) {
                 tracks.remove(t);
+
+                for (Playlist p : playlists) {
+                    p.removeTrack(trackName);
+                }
+
+                TrackSys.calculatePlaylistTotals();
+                TrackSys.calculateTotalLength();
                 return true;
             }
         }
@@ -52,7 +59,7 @@ public class TrackSys {
 
     public static Track searchTrack(String trackName) {
         for (Track t : tracks) {
-            if (t.name.equalsIgnoreCase(trackName)) {
+            if (t.getName().equalsIgnoreCase(trackName)) {
                 return t;
             }
         }
@@ -84,7 +91,7 @@ public class TrackSys {
         double total = 0;
 
         for (Track t : tracks) {
-            total += t.length;
+            total += t.getLength();
         }
 
         return total;
@@ -98,7 +105,7 @@ public class TrackSys {
 
             for (Track t : ptracks) {
                 trackCount++;
-                totalLength += t.length;
+                totalLength += t.getLength();
             }
 
             p.setTrackCount(trackCount);

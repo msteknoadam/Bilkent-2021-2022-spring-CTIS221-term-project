@@ -28,7 +28,7 @@ public class CreatePlaylistFrame extends javax.swing.JFrame {
         DefaultListModel model = new DefaultListModel();
 
         for (Track t : TrackSys.tracks) {
-            model.addElement(t.name);
+            model.addElement(t.getName());
         }
 
         this.TracksList.setModel(model);
