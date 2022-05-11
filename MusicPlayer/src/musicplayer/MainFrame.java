@@ -17,6 +17,7 @@ import javax.swing.DefaultListModel;
 public class MainFrame extends javax.swing.JFrame {
 
     AddTrackFrame add = new AddTrackFrame(this);
+    CreatePlaylistFrame createP = new CreatePlaylistFrame(this);
 
     Track currentlyPlayingTrack = null;
     int progressSecondsPassed = 0;
@@ -80,6 +81,16 @@ public class MainFrame extends javax.swing.JFrame {
         this.TracksList.setModel(model);
     }
 
+    public void updatePlaylistsList() {
+        DefaultListModel model = new DefaultListModel();
+
+        for (Playlist p : TrackSys.playlists) {
+            model.addElement(p.getName());
+        }
+
+        this.PlaylistsList.setModel(model);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -118,6 +129,9 @@ public class MainFrame extends javax.swing.JFrame {
         addTrackButton = new javax.swing.JButton();
         trackListScrollPane = new javax.swing.JScrollPane();
         TracksList = new javax.swing.JList<>();
+        playlistListScrollPane = new javax.swing.JScrollPane();
+        PlaylistsList = new javax.swing.JList<>();
+        createPlaylistButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -318,12 +332,29 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         TracksList.setBorder(javax.swing.BorderFactory.createTitledBorder("Added Tracks"));
+        TracksList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         TracksList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 TracksListValueChanged(evt);
             }
         });
         trackListScrollPane.setViewportView(TracksList);
+
+        PlaylistsList.setBorder(javax.swing.BorderFactory.createTitledBorder("Playlists"));
+        PlaylistsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        PlaylistsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                PlaylistsListValueChanged(evt);
+            }
+        });
+        playlistListScrollPane.setViewportView(PlaylistsList);
+
+        createPlaylistButton.setText("Create Playlist");
+        createPlaylistButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createPlaylistButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -336,9 +367,15 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(23, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(trackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(trackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addComponent(playlistListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(addTrackButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(createPlaylistButton)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(addTrackButton)
+                                .addGap(10, 10, 10)))
                         .addGap(62, 62, 62))))
         );
         layout.setVerticalGroup(
@@ -347,10 +384,15 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
-                        .addComponent(addTrackButton))
+                        .addComponent(addTrackButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(createPlaylistButton))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(trackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(trackListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(playlistListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -437,6 +479,27 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_PlayPauseButtonActionPerformed
 
+    private void createPlaylistButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPlaylistButtonActionPerformed
+        this.createP.updateTracksList();
+        this.createP.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_createPlaylistButtonActionPerformed
+
+    private void PlaylistsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_PlaylistsListValueChanged
+        String selected = this.PlaylistsList.getSelectedValue();
+
+        if (selected != null) {
+            Playlist found = TrackSys.searchPlaylist(selected);
+
+            if (found != null) {
+                CreditsFrame frame = new CreditsFrame(found.toString());
+                frame.setVisible(true);
+            }
+        } else {
+            //
+        }
+    }//GEN-LAST:event_PlaylistsListValueChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AlbumNameLabel;
     private javax.swing.JTextField AlbumNameTextField;
@@ -451,6 +514,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JToggleButton LikeDislikeButton;
     private javax.swing.JPanel NotPlayingPanel;
     private javax.swing.JToggleButton PlayPauseButton;
+    private javax.swing.JList<String> PlaylistsList;
     private javax.swing.JPanel PodcastDetailsPanel;
     private javax.swing.JLabel PodcasterLabel;
     private javax.swing.JTextField PodcasterTextField;
@@ -464,8 +528,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel TrackThumbLabel;
     private javax.swing.JList<String> TracksList;
     private javax.swing.JButton addTrackButton;
+    private javax.swing.JButton createPlaylistButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel notPlayingLabel;
+    private javax.swing.JScrollPane playlistListScrollPane;
     private javax.swing.JScrollPane trackListScrollPane;
     // End of variables declaration//GEN-END:variables
 }

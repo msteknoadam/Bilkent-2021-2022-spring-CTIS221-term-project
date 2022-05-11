@@ -113,4 +113,8 @@ public class Playlist {
         return true;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
 }

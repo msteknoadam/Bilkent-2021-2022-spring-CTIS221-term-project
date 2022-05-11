@@ -60,6 +60,16 @@ public class TrackSys {
         return null;
     }
 
+    public static Playlist searchPlaylist(String playlistName) {
+        for (Playlist p : playlists) {
+            if (p.getName().equalsIgnoreCase(playlistName)) {
+                return p;
+            }
+        }
+
+        return null;
+    }
+
     public static String display() {
         String out = "";
 
